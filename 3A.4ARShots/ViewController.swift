@@ -10,13 +10,13 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController {
     @IBOutlet var sceneView: ARSCNView!
     var hoopAdded = false
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        sceneView.delegate = self
+        
         sceneView.showsStatistics = true
     }
     
@@ -31,9 +31,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
         sceneView.session.pause()
     }
     
+}
+
+extension ViewController {
     func addHoop(result: ARHitTestResult) {
         let hoopScene = SCNScene(named: "art.scnassets/hoop.scn")
         
@@ -47,7 +51,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         hoopNode.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: hoopNode, options: [SCNPhysicsShape.Option.type : SCNPhysicsShape.ShapeType.concavePolyhedron]))
         
         sceneView.scene.rootNode.addChildNode(hoopNode)
-    }
+}
     
     @IBAction func screenTapped(_ sender: UITapGestureRecognizer) {
          if !hoopAdded { let touchLocation = sender.location(in: sceneView)
@@ -59,8 +63,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
           }
         } else {
             createBasketBall()
-        }
-        }
+    }
+}
 
     func createBasketBall() {
         guard let currentFrame = sceneView.session.currentFrame else {return}
@@ -76,7 +80,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let power = Float(10.0)
         let force = SCNVector3(-cameraTransform.m31*power, -cameraTransform.m32*power, -cameraTransform.m33*power)
         ball.physicsBody?.applyForce(force, asImpulse: true)
+        
         sceneView.scene.rootNode.addChildNode(ball)
     }
 }
-
